@@ -17,16 +17,22 @@ def get_last_time_stamping():
         return None
     return None
 
-def stream_data(file_path="Testing_file/data_packets.txt"):
+import time
+from datetime import datetime
+
+def stream_data(file_path="data_packets.txt"):
     with open(file_path, "r") as file:
         for line in file:
-            line = line.strip().strip("<>")
-            values = line.split(",")
+            line = line.strip()
+
+            # Remove angle brackets from each value
+            values = [v.strip("<>") for v in line.split(",")]
 
             if len(values) < 3:
                 continue  
 
             altitude, pressure, temp = values
+
             yield {
                 "altitude": altitude,
                 "pressure": pressure,
@@ -35,9 +41,11 @@ def stream_data(file_path="Testing_file/data_packets.txt"):
 
             time.sleep(1)
 
+
 if __name__ == "__main__":
     for data in stream_data():
         print(f"Altitude: {data['altitude']} m")
         print(f"Pressure: {data['pressure']} Pa")
         print(f"Temperature: {data['temp']} °C")
         print("-" * 40)
+
